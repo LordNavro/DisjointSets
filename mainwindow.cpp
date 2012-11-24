@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     scene = new DisjointSetsScene(this, forest, DisjointSetsScene::TREE, pen, brush, pen);
     connect(scene, SIGNAL(signalNodeClicked(Node*)), this, SLOT(slotNodeClicked(Node*)));
     view = new QGraphicsView(scene, this);
+    view->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     this->setCentralWidget(view);
 
     createActions();

@@ -34,6 +34,8 @@ void DeleteNodeTool::deleteRootNode(Node *node)
     node->children.removeFirst();
     newRoot->parent = NULL;
     scene->forest->replace(scene->forest->indexOf(node), newRoot);
+    foreach(Node *child, node->children)
+        child->parent = newRoot;
     newRoot->children.append(node->children);
     delete node;
 }
@@ -51,5 +53,7 @@ void DeleteNodeTool::deleteNode(Node *node)
     newNode->parent = node->parent;
     node->parent->children.replace(node->parent->children.indexOf(node), newNode);
     newNode->children.append(node->children);
+    foreach(Node *child, node->children)
+        child->parent = newNode;
     delete node;
 }
