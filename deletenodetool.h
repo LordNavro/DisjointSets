@@ -12,6 +12,7 @@ public:
     void nodeClicked(Node *node);
     void selectTool();
     void deselectTool();
+    void deleteRootNode(Node *node);
     void deleteNode(Node *node);
 };
 

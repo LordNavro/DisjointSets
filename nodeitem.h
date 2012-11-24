@@ -4,6 +4,7 @@
 #include <QGraphicsEllipseItem>
 #include <QObject>
 #include "node.h"
+#include <QPainter>
 
 class NodeItem : public QObject, public QGraphicsEllipseItem
 {
@@ -12,7 +13,9 @@ class NodeItem : public QObject, public QGraphicsEllipseItem
 
 public:
     NodeItem(QObject *parentObject, QGraphicsItem *parentItem);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
+    QString label;
     Node *node;
     bool highlighted;
 

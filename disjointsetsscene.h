@@ -23,6 +23,8 @@ public:
     QPen arrowPen;
 
     void resetScene();
+    void addAsList();
+    void addAsTree();
     void highlightNode(Node *node, QBrush brush, QPen pen);
     void highlightArrow(Node *from, Node *to, QPen pen);
     void unhighlightNode(Node *node);
@@ -36,6 +38,7 @@ signals:
 
 protected:
     QPoint addNodeItemToScene(Node * node, QPoint startCoords);
+    QPoint addListItemToScene(Node * node, QPoint startCoords);
 };
 
 #endif // DISJOINTSETSSCENE_H

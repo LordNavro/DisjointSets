@@ -4,6 +4,12 @@ NodeItem::NodeItem(QObject * parentObject, QGraphicsItem *parentItem) : QObject(
 
 void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    //QGraphicsEllipseItem::mousePressEvent(event);
     emit signalNodeClicked(node);
-    //QGraphicsEllipseItem::mouseReleaseEvent(event);
+}
+
+void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    QGraphicsEllipseItem::paint(painter, option, widget);
+    painter->drawText(boundingRect(), label, QTextOption(Qt::AlignCenter));
 }

@@ -9,25 +9,22 @@ MainWindow::MainWindow(QWidget *parent) :
 
     forest = new QList<Node *>;
 
-    createActions();
-    createMenus();
-    createToolBars();
-    createTools();
-
-
     QBrush brush(Qt::green);
-    QPen pen(Qt::yellow);
+    QPen pen(Qt::black);
     scene = new DisjointSetsScene(this, forest, DisjointSetsScene::TREE, pen, brush, pen);
     connect(scene, SIGNAL(signalNodeClicked(Node*)), this, SLOT(slotNodeClicked(Node*)));
     view = new QGraphicsView(scene, this);
     this->setCentralWidget(view);
 
+    createActions();
+    createMenus();
+    createToolBars();
+    createTools();
+
     this->currentTool = NULL;
     actionAddNode->trigger();
-    actionList->trigger();
+    actionTree->trigger();
 
-    //THIS FUCKING DEFAULT LINE NEARLY RUINED WHOLE PROJECT
-    //ui->setupUi(this);
 }
 
 MainWindow::~MainWindow()
@@ -162,8 +159,8 @@ void MainWindow::createToolBars(void)
     addToolBar(Qt::TopToolBarArea, toolBarOperation);
 
     toolBarRepresentation = addToolBar(tr("Representation"));
-    toolBarRepresentation->addAction(actionList);
     toolBarRepresentation->addAction(actionTree);
+    toolBarRepresentation->addAction(actionList);
     toolBarRepresentation->addAction(actionOptimizeFindSet);
     toolBarRepresentation->addAction(actionOptimizeUnion);
 }
@@ -201,7 +198,8 @@ void MainWindow::slotAbout(void)
 
 void MainWindow::slotMakeSet(void)
 {
-    forest->append(new Node(NULL, "new root node"));
+    static int counter = 0;
+    forest->append(new Node(NULL, "r" + QString::number(counter++)));
     scene->resetScene();
 }
 

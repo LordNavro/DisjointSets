@@ -15,7 +15,11 @@ void AddNodeTool::deselectTool()
 
 void AddNodeTool::nodeClicked(Node *node)
 {
-    Node *newNode = new Node(node, "child");
-    node->children.append(newNode);
+    static int counter;
+    Node *newNode = new Node(node, ("c") + QString::number(counter++));
+    if(scene->representation == DisjointSetsScene::TREE)
+        node->children.append(newNode);
+    else
+        node->children.prepend(newNode);
     scene->resetScene();
 }
