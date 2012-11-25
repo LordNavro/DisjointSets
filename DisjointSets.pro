@@ -3,6 +3,7 @@
 # -------------------------------------------------
 TARGET = DisjointSets
 TEMPLATE = app
+QT += xml
 SOURCES += main.cpp \
     mainwindow.cpp \
     tool.cpp \
@@ -13,7 +14,8 @@ SOURCES += main.cpp \
     node.cpp \
     nodeitem.cpp \
     listitem.cpp \
-    disjointsetsscene.cpp
+    disjointsetsscene.cpp \
+    utils.cpp
 HEADERS += mainwindow.h \
     tool.h \
     uniontool.h \
@@ -23,5 +25,6 @@ HEADERS += mainwindow.h \
     node.h \
     nodeitem.h \
     listitem.h \
-    disjointsetsscene.h
+    disjointsetsscene.h \
+    utils.h
 FORMS += mainwindow.ui

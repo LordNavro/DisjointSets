@@ -13,6 +13,8 @@ DisjointSetsScene::DisjointSetsScene(QObject *parent, QList<Node *> *forest, Rep
 void DisjointSetsScene::resetScene(void)
 {
     clear();
+    //simulate top and left padding
+    addLine(-20,-20,0,0,QPen(Qt::white));
     if(representation == LIST)
         addAsList();
     else

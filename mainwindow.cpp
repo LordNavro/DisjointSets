@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowTitle(tr("Disjoint sets"));
 
     forest = new QList<Node *>;
+    currentFileName = "";
 
     QBrush brush(Qt::green);
     QPen pen(Qt::black);
@@ -53,10 +54,15 @@ void MainWindow::createActions(void)
     actionNew->setStatusTip(tr("Create new disjoint sets"));
     connect(actionNew, SIGNAL(triggered()), this, SLOT(slotNew()));
 
-    actionSave= new QAction(tr("&Save"), this);
+    actionSave = new QAction(tr("&Save"), this);
     actionSave->setShortcuts(QKeySequence::Save);
     actionSave->setStatusTip(tr("Save current disjoint sets"));
     connect(actionSave, SIGNAL(triggered()), this, SLOT(slotSave()));
+
+    actionSaveAs = new QAction(tr("Save &As"), this);
+    actionSaveAs->setShortcuts(QKeySequence::Save);
+    actionSaveAs->setStatusTip(tr("Save current disjoint sets as a new file"));
+    connect(actionSaveAs, SIGNAL(triggered()), this, SLOT(slotSaveAs()));
 
     actionOpen = new QAction(tr("&Open"), this);
     actionOpen->setShortcuts(QKeySequence::Open);
@@ -122,6 +128,7 @@ void MainWindow::createMenus(void)
     menuFile = menuBar()->addMenu(tr("&File"));
     menuFile->addAction(actionNew);
     menuFile->addAction(actionSave);
+    menuFile->addAction(actionSaveAs);
     menuFile->addAction(actionOpen);
 
     menuTool = menuBar()->addMenu("&Tool");
@@ -146,6 +153,7 @@ void MainWindow::createToolBars(void)
     toolBarFile = addToolBar(tr("File"));
     toolBarFile->addAction(actionNew);
     toolBarFile->addAction(actionSave);
+    toolBarFile->addAction(actionSaveAs);
     toolBarFile->addAction(actionOpen);
     toolBarFile->setAllowedAreas(Qt::TopToolBarArea | Qt::LeftToolBarArea);
     addToolBar(Qt::TopToolBarArea, toolBarFile);
@@ -179,12 +187,42 @@ void MainWindow::createTools(void)
 
 void MainWindow::slotNew(void)
 {
-
+    Utils::deleteForest(*this->forest);
+    this->forest->empty();
+    this->scene->resetScene();
 }
 
 void MainWindow::slotSave(void)
 {
+    if(currentFileName == "")
+    {
+        slotSaveAs();
+        return;
+    }
+    QFile file(currentFileName);
+    if(!file.open(QIODevice::WriteOnly))
+    {
+        currentFileName = "";
+        QMessageBox mbox;
+        mbox.setText("Cant open file " + currentFileName + "in write mode!");
+        mbox.exec();
+        return;
+    }
+    QTextStream ts(&file);
 
+    ts << Utils::forestToXml(*forest).toString();
+    file.close();
+    QMessageBox mbox;
+    mbox.setText("Current document saved as " + currentFileName + " succesfully.");
+    mbox.exec();
+
+}
+
+void MainWindow::slotSaveAs(void)
+{
+    currentFileName = QFileDialog::getSaveFileName(this, tr("Save as..."), "", tr("XML file (*.xml)"));
+    if(currentFileName != "")
+        slotSave();
 }
 
 void MainWindow::slotOpen(void)

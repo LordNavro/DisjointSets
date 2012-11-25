@@ -13,6 +13,11 @@
 #include "node.h"
 #include "nodeitem.h"
 #include "disjointsetsscene.h"
+#include <QFile>
+#include <QMessageBox>
+#include "utils.h"
+#include <QFileDialog>
+#include <QTextStream>
 
 namespace Ui {
     class MainWindow;
@@ -40,6 +45,8 @@ protected:
 
     QList<Node *> *forest;
 
+    QString currentFileName;
+
     void createActions(void);
     void createMenus(void);
     void createToolBars(void);
@@ -52,6 +59,7 @@ protected:
 
     QAction *actionNew;
     QAction *actionSave;
+    QAction *actionSaveAs;
     QAction *actionOpen;
     QAction *actionAbout;
     QAction *actionMakeSet;
@@ -80,6 +88,7 @@ protected:
 public slots:
     void slotNew(void);
     void slotSave(void);
+    void slotSaveAs(void);
     void slotOpen(void);
     void slotAbout(void);
 
