@@ -6,7 +6,7 @@
 class UnionTool: public Tool
 {
 public:
-    UnionTool(DisjointSetsScene *scene);
+    UnionTool(DisjointSetsScene *scene, QObject *parent = NULL);
 
     void nodeClicked(Node *node);
     void selectTool();

@@ -1,7 +1,7 @@
 #include "uniontool.h"
 
 
-UnionTool::UnionTool(DisjointSetsScene *scene) : Tool(scene){}
+UnionTool::UnionTool(DisjointSetsScene *scene, QObject *parent) : Tool(scene, parent){}
 
 void UnionTool::selectTool()
 {

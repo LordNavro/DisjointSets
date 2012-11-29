@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     setWindowTitle(tr("Disjoint sets"));
+    setGeometry(QRect(10,10,800,600));
 
     forest = new QList<Node *>;
     currentFileName = "";
@@ -24,9 +25,11 @@ MainWindow::MainWindow(QWidget *parent) :
     createTools();
 
     this->currentTool = NULL;
+    this->currentSimulation = NULL;
     actionAddNode->trigger();
     actionTree->trigger();
 
+    actionGroupSimulation->setDisabled(true);
 }
 
 MainWindow::~MainWindow()
@@ -49,22 +52,24 @@ void MainWindow::changeEvent(QEvent *e)
 
 void MainWindow::createActions(void)
 {
-    actionNew = new QAction(tr("&New"), this);
+    actionGroupFile = new QActionGroup(this);
+
+    actionNew = new QAction(tr("&New"), actionGroupFile);
     actionNew->setShortcuts(QKeySequence::New);
     actionNew->setStatusTip(tr("Create new disjoint sets"));
     connect(actionNew, SIGNAL(triggered()), this, SLOT(slotNew()));
 
-    actionSave = new QAction(tr("&Save"), this);
+    actionSave = new QAction(tr("&Save"), actionGroupFile);
     actionSave->setShortcuts(QKeySequence::Save);
     actionSave->setStatusTip(tr("Save current disjoint sets"));
     connect(actionSave, SIGNAL(triggered()), this, SLOT(slotSave()));
 
-    actionSaveAs = new QAction(tr("Save &As"), this);
+    actionSaveAs = new QAction(tr("Save &As"), actionGroupFile);
     actionSaveAs->setShortcuts(QKeySequence::Save);
     actionSaveAs->setStatusTip(tr("Save current disjoint sets as a new file"));
     connect(actionSaveAs, SIGNAL(triggered()), this, SLOT(slotSaveAs()));
 
-    actionOpen = new QAction(tr("&Open"), this);
+    actionOpen = new QAction(tr("&Open"), actionGroupFile);
     actionOpen->setShortcuts(QKeySequence::Open);
     actionOpen->setStatusTip(tr("Open saved disjoint sets"));
     connect(actionOpen, SIGNAL(triggered()), this, SLOT(slotOpen()));
@@ -76,7 +81,7 @@ void MainWindow::createActions(void)
 
     actionGroupOperation = new QActionGroup(this);
 
-    actionMakeSet = new QAction(tr("&Make set"), this);
+    actionMakeSet = new QAction(tr("&Make set"), actionGroupOperation);
     actionMakeSet->setStatusTip(tr("Make new set"));
     connect(actionMakeSet, SIGNAL(triggered()), this, SLOT(slotMakeSet()));
 
@@ -112,15 +117,36 @@ void MainWindow::createActions(void)
     actionList->setCheckable(true);
     connect(actionList, SIGNAL(triggered()), this, SLOT(slotList()));
 
-    actionOptimizeUnion = new QAction(tr("Optimize &Union"), this);
+    actionGroupOptimalization = new QActionGroup(this);
+    actionGroupOptimalization->setExclusive(false);
+
+    actionOptimizeUnion = new QAction(tr("Optimize &Union"), actionGroupOptimalization);
     actionOptimizeUnion->setStatusTip(tr("Optimize union operation by connecting shorter/smaller list/set to higher/larger"));
     actionOptimizeUnion->setCheckable(true);
     connect(actionOptimizeUnion, SIGNAL(triggered()), this, SLOT(slotOptimizeUnion()));
 
-    actionOptimizeFindSet = new QAction(tr("Optimize &Find Set"), this);
+    actionOptimizeFindSet = new QAction(tr("Optimize &Find Set"), actionGroupOptimalization);
     actionOptimizeFindSet->setStatusTip(tr("Optimize Find Set operation by contracting paths"));
     actionOptimizeFindSet->setCheckable(true);
     connect(actionOptimizeFindSet, SIGNAL(triggered()), this, SLOT(slotOptimizeFindSet()));
+
+    actionGroupSimulation = new QActionGroup(this);
+
+    actionSimulationNext = new QAction(tr("&Next step"), actionGroupSimulation);
+    actionSimulationNext->setStatusTip(tr("Executes next step of the simulation"));
+    connect(actionSimulationNext, SIGNAL(triggered()), this, SLOT(slotSimulationNext()));
+
+    actionSimulationPrevious = new QAction(tr("&Previous step"), actionGroupSimulation);
+    actionSimulationPrevious->setStatusTip(tr("Undoes last step of the simulation"));
+    connect(actionSimulationPrevious, SIGNAL(triggered()), this, SLOT(slotSimulationPrevious()));
+
+    actionSimulationStop = new QAction(tr("&Stop"), actionGroupSimulation);
+    actionSimulationStop->setStatusTip(tr("Abandon the simulation"));
+    connect(actionSimulationStop, SIGNAL(triggered()), this, SLOT(slotSimulationStop()));
+
+    actionSimulationFinish = new QAction(tr("&Finish"), actionGroupSimulation);
+    actionSimulationFinish->setStatusTip(tr("Runs the editor in state after operation"));
+    connect(actionSimulationFinish, SIGNAL(triggered()), this, SLOT(slotSimulationFinish()));
 }
 
 void MainWindow::createMenus(void)
@@ -143,6 +169,12 @@ void MainWindow::createMenus(void)
     menuRepresentation->addAction(actionList);
     menuRepresentation->addAction(actionOptimizeUnion);
     menuRepresentation->addAction(actionOptimizeFindSet);
+
+    menuSimulation = menuBar()->addMenu("&Simulation");
+    menuSimulation->addAction(actionSimulationNext);
+    menuSimulation->addAction(actionSimulationPrevious);
+    menuSimulation->addAction(actionSimulationStop);
+    menuSimulation->addAction(actionSimulationFinish);
 
     menuAbout = menuBar()->addMenu(tr("&About"));
     menuAbout->addAction(actionAbout);
@@ -172,22 +204,34 @@ void MainWindow::createToolBars(void)
     toolBarRepresentation->addAction(actionList);
     toolBarRepresentation->addAction(actionOptimizeFindSet);
     toolBarRepresentation->addAction(actionOptimizeUnion);
+    addToolBar(Qt::LeftToolBarArea, toolBarRepresentation);
+
+    toolBarSimulation = addToolBar(tr("Simulation"));
+    toolBarSimulation->addAction(actionSimulationNext);
+    toolBarSimulation->addAction(actionSimulationPrevious);
+    toolBarSimulation->addAction(actionSimulationStop);
+    toolBarSimulation->addAction(actionSimulationFinish);
+    addToolBar(Qt::LeftToolBarArea, toolBarSimulation);
 }
 
 void MainWindow::createTools(void)
 {
     toolAddNode = new AddNodeTool(scene);
+    connect(toolAddNode, SIGNAL(signalSimulate(Simulation*)), this, SLOT(slotSimulate(Simulation*)));
 
     toolDeleteNode = new DeleteNodeTool(scene);
+    connect(toolDeleteNode, SIGNAL(signalSimulate(Simulation*)), this, SLOT(slotSimulate(Simulation*)));
 
     toolFindSet = new FindSetTool(scene);
+    connect(toolFindSet, SIGNAL(signalSimulate(Simulation*)), this, SLOT(slotSimulate(Simulation*)));
 
     toolUnion = new UnionTool(scene);
+    connect(toolUnion, SIGNAL(signalSimulate(Simulation*)), this, SLOT(slotSimulate(Simulation*)));
 }
 
 void MainWindow::slotNew(void)
 {
-    Utils::deleteForest(*this->forest);
+    Utils::deleteForest(this->forest);
     this->forest->empty();
     this->scene->resetScene();
 }
@@ -279,7 +323,6 @@ void MainWindow::slotNodeClicked(Node *node)
     currentTool->nodeClicked(node);
 }
 
-
 void MainWindow::slotList()
 {
     currentTool->deselectTool();
@@ -306,4 +349,70 @@ void MainWindow::slotOptimizeUnion()
     optimizeUnion = actionUnion->isChecked();
 }
 
+void MainWindow::slotSimulate(Simulation *simulation)
+{
+    this->currentSimulation = simulation;
+    this->actionGroupFile->setDisabled(true);
+    this->actionGroupOperation->setDisabled(true);
+    this->actionGroupOptimalization->setDisabled(true);
+    this->actionGroupRepresentation->setDisabled(true);
 
+    this->actionGroupSimulation->setDisabled(false);
+
+    this->view->setScene(* this->currentSimulation->currentScene);
+    this->view->update();
+}
+
+void MainWindow::slotSimulationNext()
+{
+    this->currentSimulation->currentScene++;
+    if(this->currentSimulation->currentScene == this->currentSimulation->scenes.end())
+        this->currentSimulation->currentScene--;
+    this->view->setScene(* this->currentSimulation->currentScene);
+}
+
+void MainWindow::slotSimulationPrevious()
+{
+    if(this->currentSimulation->currentScene != this->currentSimulation->scenes.begin())
+        this->currentSimulation->currentScene--;
+    this->view->setScene(* this->currentSimulation->currentScene);
+}
+
+void MainWindow::slotSimulationStop()
+{
+    this->view->setScene(this->scene);
+    this->scene->resetScene();
+    this->view->update();
+
+    this->actionGroupFile->setDisabled(false);
+    this->actionGroupOperation->setDisabled(false);
+    this->actionGroupOptimalization->setDisabled(false);
+    this->actionGroupRepresentation->setDisabled(false);
+
+    this->actionGroupSimulation->setDisabled(true);
+
+    delete this->currentSimulation;
+    this->currentSimulation = NULL;
+}
+
+
+void MainWindow::slotSimulationFinish()
+{
+
+    this->view->setScene(this->scene);
+    Utils::deleteForest(this->scene->forest);
+    this->scene->forest = Utils::copyForest(this->currentSimulation->finalForest);
+    forest = this->scene->forest;
+    this->scene->resetScene();
+    this->view->update();
+
+    this->actionGroupFile->setDisabled(false);
+    this->actionGroupOperation->setDisabled(false);
+    this->actionGroupOptimalization->setDisabled(false);
+    this->actionGroupRepresentation->setDisabled(false);
+
+    this->actionGroupSimulation->setDisabled(true);
+
+    delete this->currentSimulation;
+    this->currentSimulation = NULL;
+}

@@ -6,7 +6,7 @@
 class AddNodeTool : public Tool
 {
 public:
-    AddNodeTool(DisjointSetsScene *scene);
+    AddNodeTool(DisjointSetsScene *scene, QObject *parent = NULL);
 
     void nodeClicked(Node *node);
     void selectTool();

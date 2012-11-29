@@ -1,7 +1,7 @@
 #include "deletenodetool.h"
 
 
-DeleteNodeTool::DeleteNodeTool(DisjointSetsScene *scene) : Tool(scene){}
+DeleteNodeTool::DeleteNodeTool(DisjointSetsScene *scene, QObject *parent) : Tool(scene, parent){}
 
 void DeleteNodeTool::selectTool()
 {

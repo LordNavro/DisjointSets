@@ -21,17 +21,17 @@ void Utils::deleteTree(Node *tree)
     delete(tree);
 }
 
-QList<Node *> Utils::copyForest(QList<Node *> forest)
+QList<Node *> * Utils::copyForest(QList<Node *> *forest)
 {
-    QList<Node *>newForest;
-    foreach(Node *tree, forest)
-        newForest.append(copyTree(tree));
+    QList<Node *> *newForest = new QList<Node *>;
+    foreach(Node *tree, *forest)
+        newForest->append(copyTree(tree));
     return newForest;
 }
 
-void Utils::deleteForest(QList<Node *> forest)
+void Utils::deleteForest(QList<Node *> *forest)
 {
-    foreach(Node *tree, forest)
+    foreach(Node *tree, *forest)
         deleteTree(tree);
 }
 

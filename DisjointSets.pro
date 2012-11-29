@@ -15,7 +15,8 @@ SOURCES += main.cpp \
     nodeitem.cpp \
     listitem.cpp \
     disjointsetsscene.cpp \
-    utils.cpp
+    utils.cpp \
+    simulation.cpp
 HEADERS += mainwindow.h \
     tool.h \
     uniontool.h \
@@ -26,5 +27,6 @@ HEADERS += mainwindow.h \
     nodeitem.h \
     listitem.h \
     disjointsetsscene.h \
-    utils.h
+    utils.h \
+    simulation.h
 FORMS += mainwindow.ui

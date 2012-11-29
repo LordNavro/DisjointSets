@@ -35,6 +35,7 @@ protected:
 
 
     Tool *currentTool;
+    Simulation *currentSimulation;
     bool optimizeFindSet;
     bool optimizeUnion;
 
@@ -54,8 +55,11 @@ protected:
 
     QPoint addNodeItemToScene(Node *node, QPoint startCoords);
 
+    QActionGroup *actionGroupFile;
     QActionGroup *actionGroupOperation;
     QActionGroup *actionGroupRepresentation;
+    QActionGroup *actionGroupOptimalization;
+    QActionGroup *actionGroupSimulation;
 
     QAction *actionNew;
     QAction *actionSave;
@@ -71,15 +75,21 @@ protected:
     QAction *actionList;
     QAction *actionOptimizeFindSet;
     QAction *actionOptimizeUnion;
+    QAction *actionSimulationNext;
+    QAction *actionSimulationPrevious;
+    QAction *actionSimulationStop;
+    QAction *actionSimulationFinish;
 
     QMenu *menuFile;
     QMenu *menuTool;
     QMenu *menuRepresentation;
+    QMenu *menuSimulation;
     QMenu *menuAbout;
 
     QToolBar *toolBarFile;
     QToolBar *toolBarOperation;
     QToolBar *toolBarRepresentation;
+    QToolBar *toolBarSimulation;
 
     DisjointSetsScene *scene;
     QGraphicsView *view;
@@ -103,7 +113,14 @@ public slots:
     void slotOptimizeFindSet(void);
     void slotOptimizeUnion(void);
 
+    void slotSimulationNext(void);
+    void slotSimulationPrevious(void);
+    void slotSimulationStop(void);
+    void slotSimulationFinish(void);
+
     void slotNodeClicked(Node *node);
+
+    void slotSimulate(Simulation *);
 
 
 private:

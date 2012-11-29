@@ -1,7 +1,7 @@
 #include "addnodetool.h"
 
 
-AddNodeTool::AddNodeTool(DisjointSetsScene *scene) : Tool(scene){}
+AddNodeTool::AddNodeTool(DisjointSetsScene *scene, QObject *parent) : Tool(scene, parent){}
 
 void AddNodeTool::selectTool()
 {
