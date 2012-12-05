@@ -1,12 +1,14 @@
 #include "disjointsetsscene.h"
 
-DisjointSetsScene::DisjointSetsScene(QObject *parent, QList<Node *> *forest, Representation representation, QPen nodePen, QBrush nodeBrush, QPen arrowPen)
+DisjointSetsScene::DisjointSetsScene(QObject *parent, QList<Node *> *forest, Representation representation)
     : QGraphicsScene(parent)
 {
     this->forest = forest;
-    this->nodePen = nodePen;
-    this->nodeBrush = nodeBrush;
-    this->arrowPen = arrowPen;
+    this->nodePen = QPen(Qt::black);
+    this->nodeBrush = QBrush(Qt::green);
+    this->arrowPen = QPen(Qt::black);
+    this->nodeHighlightPen = QPen(Qt::yellow);
+    this->nodeHighlightBrush = QBrush(Qt::red);
     this->representation = representation;
 }
 
@@ -40,6 +42,56 @@ void DisjointSetsScene::addAsTree()
     {
         coords = addNodeItemToScene(tree, coords);
         coords.setY(0);
+    }
+}
+
+void DisjointSetsScene::highlightNode(Node *node)
+{
+    foreach(QGraphicsItem *item, this->items())
+    {
+        if(NodeItem *i = qgraphicsitem_cast<NodeItem *>(item))
+        {
+            if(i->node == node)
+            {
+                i->setBrush(nodeHighlightBrush);
+                i->setPen(nodeHighlightPen);
+                i->update();
+            }
+        }
+        if(ListItem *i = qgraphicsitem_cast<ListItem *>(item))
+        {
+            if(i->node == node)
+            {
+                i->setBrush(nodeHighlightBrush);
+                i->setPen(nodeHighlightPen);
+                i->update();
+            }
+        }
+    }
+}
+
+void DisjointSetsScene::unhighlightNode(Node *node)
+{
+    foreach(QGraphicsItem *item, this->items())
+    {
+        if(NodeItem *i = qgraphicsitem_cast<NodeItem *>(item))
+        {
+            if(i->node == node)
+            {
+                i->setBrush(nodeBrush);
+                i->setPen(nodePen);
+                i->update();
+            }
+        }
+        if(ListItem *i = qgraphicsitem_cast<ListItem *>(item))
+        {
+            if(i->node == node)
+            {
+                i->setBrush(nodeBrush);
+                i->setPen(nodePen);
+                i->update();
+            }
+        }
     }
 }
 

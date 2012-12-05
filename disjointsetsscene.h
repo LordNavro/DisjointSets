@@ -13,7 +13,7 @@ class DisjointSetsScene : public QGraphicsScene
 public:
     typedef enum {TREE, LIST} Representation;
 
-    DisjointSetsScene(QObject *parent, QList<Node *> *forest, Representation representation, QPen nodePen, QBrush nodeBrush, QPen arrowPen);
+    DisjointSetsScene(QObject *parent, QList<Node *> *forest, Representation representation);
 
     Representation representation;
 
@@ -21,17 +21,14 @@ public:
     QPen nodePen;
     QBrush nodeBrush;
     QPen arrowPen;
+    QPen nodeHighlightPen;
+    QBrush nodeHighlightBrush;
 
     void resetScene();
     void addAsList();
     void addAsTree();
-    void highlightNode(Node *node, QBrush brush, QPen pen);
-    void highlightArrow(Node *from, Node *to, QPen pen);
+    void highlightNode(Node *node);
     void unhighlightNode(Node *node);
-    void unhighlightArrow(Node *from, Node *to);
-
-    QList<Node *> highlightedNodes;
-    QList<QPair<Node *, Node*> > highlightedArrows;
 
 signals:
     void signalNodeClicked(Node *node);

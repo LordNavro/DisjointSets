@@ -11,9 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     forest = new QList<Node *>;
     currentFileName = "";
 
-    QBrush brush(Qt::green);
-    QPen pen(Qt::black);
-    scene = new DisjointSetsScene(this, forest, DisjointSetsScene::TREE, pen, brush, pen);
+    scene = new DisjointSetsScene(this, forest, DisjointSetsScene::TREE);
     connect(scene, SIGNAL(signalNodeClicked(Node*)), this, SLOT(slotNodeClicked(Node*)));
     view = new QGraphicsView(scene, this);
     view->setAlignment(Qt::AlignTop | Qt::AlignLeft);
@@ -28,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->currentSimulation = NULL;
     actionAddNode->trigger();
     actionTree->trigger();
+    actionOptimizeFindSet->trigger();
+    actionOptimizeUnion->trigger();
 
     actionGroupSimulation->setDisabled(true);
 }
@@ -341,12 +341,16 @@ void MainWindow::slotTree()
 
 void MainWindow::slotOptimizeFindSet()
 {
-    optimizeFindSet = actionFindSet->isChecked();
+    //the value is BEFORE CHANGE!
+    optimizeFindSet = !actionFindSet->isChecked();
+    toolFindSet->optimize = optimizeFindSet;
 }
 
 void MainWindow::slotOptimizeUnion()
 {
-    optimizeUnion = actionUnion->isChecked();
+    //the value is BEFORE CHANGE!
+    optimizeUnion = !actionUnion->isChecked();
+    toolUnion->optimize = optimizeUnion;
 }
 
 void MainWindow::slotSimulate(Simulation *simulation)
