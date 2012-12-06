@@ -30,6 +30,8 @@ public:
     void highlightNode(Node *node);
     void unhighlightNode(Node *node);
 
+    ListItem *findItem(Node *node);
+
 signals:
     void signalNodeClicked(Node *node);
 

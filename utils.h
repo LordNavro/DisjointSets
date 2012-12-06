@@ -19,6 +19,11 @@ public:
     static QDomDocument forestToXml(QList<Node *>forest);
     static QList<Node *> xmlToForest(QDomDocument xml);
 
+    static int treeHeight(Node *root);
+    static int listLength(Node *root);
+
+    static QList<Node *> treeToList(Node *node);
+
 private:
     Utils();
 };

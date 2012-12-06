@@ -72,4 +72,36 @@ QList<Node *> Utils::xmlToForest(QDomDocument xml)
     return forest;
 }
 
+int Utils::treeHeight(Node *root)
+{
+    int height = 0;
+    foreach(Node *child, root->children)
+    {
+        int ch = Utils::treeHeight(child);
+        if(ch > height)
+            height = ch;
+    }
+    return height + 1;
+}
+
+int Utils::listLength(Node *root)
+{
+    int length = 0;
+
+    foreach(Node *child, root->children)
+    {
+        length += Utils::listLength(child);
+    }
+    return length + 1;
+}
+
+QList<Node *> Utils::treeToList(Node *node)
+{
+    QList<Node *> list;
+    list.append(node);
+    foreach(Node * child, node->children)
+        list.append(treeToList(child));
+    return list;
+}
+
 

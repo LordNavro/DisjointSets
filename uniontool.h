@@ -2,6 +2,8 @@
 #define UNIONTOOL_H
 
 #include "tool.h"
+#include "simulation.h"
+#include "utils.h"
 
 class UnionTool: public Tool
 {
@@ -15,8 +17,8 @@ public:
     void deselectTool();
     void simulate(Node *n1, Node *n2);
 
-    void simulateTree(Simulaion *s, Node *n1, Node *n2);
-    void simulateList(Simulaion *s, Node *n1, Node *n2);
+    void simulateTree(Simulation *simulation, Node *n1, Node *n2);
+    void simulateList(Simulation *simulation, Node *n1, Node *n2);
 };
 
 #endif // UNIONTOOL_H

@@ -18,7 +18,6 @@ public:
 
     QString label;
     Node *node;
-    bool highlighted;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);

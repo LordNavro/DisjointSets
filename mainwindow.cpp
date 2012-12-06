@@ -8,10 +8,9 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowTitle(tr("Disjoint sets"));
     setGeometry(QRect(10,10,800,600));
 
-    forest = new QList<Node *>;
     currentFileName = "";
 
-    scene = new DisjointSetsScene(this, forest, DisjointSetsScene::TREE);
+    scene = new DisjointSetsScene(this, new QList<Node *>, DisjointSetsScene::TREE);
     connect(scene, SIGNAL(signalNodeClicked(Node*)), this, SLOT(slotNodeClicked(Node*)));
     view = new QGraphicsView(scene, this);
     view->setAlignment(Qt::AlignTop | Qt::AlignLeft);
@@ -231,8 +230,8 @@ void MainWindow::createTools(void)
 
 void MainWindow::slotNew(void)
 {
-    Utils::deleteForest(this->forest);
-    this->forest->empty();
+    Utils::deleteForest(this->scene->forest);
+    this->scene->forest = new QList<Node *>;
     this->scene->resetScene();
 }
 
@@ -254,7 +253,7 @@ void MainWindow::slotSave(void)
     }
     QTextStream ts(&file);
 
-    ts << Utils::forestToXml(*forest).toString();
+    ts << Utils::forestToXml(* scene->forest).toString();
     file.close();
     QMessageBox mbox;
     mbox.setText("Current document saved as " + currentFileName + " succesfully.");
@@ -282,7 +281,7 @@ void MainWindow::slotAbout(void)
 void MainWindow::slotMakeSet(void)
 {
     static int counter = 0;
-    forest->append(new Node(NULL, "r" + QString::number(counter++)));
+    scene->forest->append(new Node(NULL, "r" + QString::number(counter++)));
     scene->resetScene();
 }
 
@@ -406,7 +405,6 @@ void MainWindow::slotSimulationFinish()
     this->view->setScene(this->scene);
     Utils::deleteForest(this->scene->forest);
     this->scene->forest = Utils::copyForest(this->currentSimulation->finalForest);
-    forest = this->scene->forest;
     this->scene->resetScene();
     this->view->update();
 

@@ -95,6 +95,21 @@ void DisjointSetsScene::unhighlightNode(Node *node)
     }
 }
 
+ListItem *DisjointSetsScene::findItem(Node *node)
+{
+    foreach(QGraphicsItem *item, this->items())
+    {
+        if(ListItem *i = qgraphicsitem_cast<ListItem *>(item))
+        {
+            if(i->node == node)
+            {
+                return i;
+            }
+        }
+    }
+    return NULL;
+}
+
 QPoint DisjointSetsScene::addNodeItemToScene(Node * node, QPoint startCoords)
 {
     NodeItem *nodeItem = new NodeItem(this, NULL);

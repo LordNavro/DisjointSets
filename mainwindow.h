@@ -44,8 +44,6 @@ protected:
     FindSetTool *toolFindSet;
     UnionTool *toolUnion;
 
-    QList<Node *> *forest;
-
     QString currentFileName;
 
     void createActions(void);
