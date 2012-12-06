@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     actionOptimizeUnion->trigger();
 
     actionGroupSimulation->setDisabled(true);
+    updateSimulationLabel();
 }
 
 MainWindow::~MainWindow()
@@ -205,11 +206,14 @@ void MainWindow::createToolBars(void)
     toolBarRepresentation->addAction(actionOptimizeUnion);
     addToolBar(Qt::LeftToolBarArea, toolBarRepresentation);
 
+    labelSimulationProgress = new QLabel(this);
+    labelSimulationProgress->setAlignment(Qt::AlignCenter);
     toolBarSimulation = addToolBar(tr("Simulation"));
     toolBarSimulation->addAction(actionSimulationNext);
     toolBarSimulation->addAction(actionSimulationPrevious);
     toolBarSimulation->addAction(actionSimulationStop);
     toolBarSimulation->addAction(actionSimulationFinish);
+    toolBarSimulation->addWidget(labelSimulationProgress);
     addToolBar(Qt::LeftToolBarArea, toolBarSimulation);
 }
 
@@ -363,6 +367,7 @@ void MainWindow::slotSimulate(Simulation *simulation)
     this->actionGroupSimulation->setDisabled(false);
 
     this->view->setScene(* this->currentSimulation->currentScene);
+    updateSimulationLabel();
     this->view->update();
 }
 
@@ -371,6 +376,7 @@ void MainWindow::slotSimulationNext()
     this->currentSimulation->currentScene++;
     if(this->currentSimulation->currentScene == this->currentSimulation->scenes.end())
         this->currentSimulation->currentScene--;
+    updateSimulationLabel();
     this->view->setScene(* this->currentSimulation->currentScene);
 }
 
@@ -378,6 +384,7 @@ void MainWindow::slotSimulationPrevious()
 {
     if(this->currentSimulation->currentScene != this->currentSimulation->scenes.begin())
         this->currentSimulation->currentScene--;
+    updateSimulationLabel();
     this->view->setScene(* this->currentSimulation->currentScene);
 }
 
@@ -396,6 +403,7 @@ void MainWindow::slotSimulationStop()
 
     delete this->currentSimulation;
     this->currentSimulation = NULL;
+    updateSimulationLabel();
 }
 
 
@@ -417,4 +425,20 @@ void MainWindow::slotSimulationFinish()
 
     delete this->currentSimulation;
     this->currentSimulation = NULL;
+    updateSimulationLabel();
+}
+
+void MainWindow::updateSimulationLabel(void)
+{
+    if(currentSimulation == NULL)
+    {
+        labelSimulationProgress->setText("No simulation \n in progress");
+        return;
+    }
+    QString label = (*currentSimulation->currentScene)->label;
+    int sumScenes = currentSimulation->scenes.size();
+    int currentScene = currentSimulation->scenes.indexOf(*currentSimulation->currentScene) + 1;
+    labelSimulationProgress->setText(QString::number(currentScene) + "/" + QString::number(sumScenes)
+                                     + "\n" + label);
+
 }

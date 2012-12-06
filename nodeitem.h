@@ -5,6 +5,8 @@
 #include <QObject>
 #include "node.h"
 #include <QPainter>
+#include <QGraphicsSceneMouseEvent>
+#include <QInputDialog>
 
 class NodeItem : public QObject, public QGraphicsEllipseItem
 {

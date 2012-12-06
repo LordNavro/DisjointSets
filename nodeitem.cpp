@@ -5,7 +5,20 @@ NodeItem::NodeItem(QObject * parentObject, QGraphicsItem *parentItem) : QObject(
 void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     //QGraphicsEllipseItem::mousePressEvent(event);
-    emit signalNodeClicked(node);
+    if(event->button() == Qt::RightButton)
+    {
+        bool ok;
+        QString input = QInputDialog::getText(NULL, tr("Rename node"), tr("Enter new label:"),
+                                              QLineEdit::Normal, this->node->label, &ok);
+        if(ok && !input.isEmpty())
+        {
+            this->node->label = input;
+            this->label = input;
+            this->update();
+        }
+    }
+    else
+        emit signalNodeClicked(node);
 }
 
 void NodeItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

@@ -3,8 +3,10 @@
 
 #include <QObject>
 #include <QGraphicsItem>
+#include <QGraphicsSceneMouseEvent>
 #include "node.h"
 #include <QPainter>
+#include <QInputDialog>
 
 
 class ListItem : public QObject, public QGraphicsRectItem

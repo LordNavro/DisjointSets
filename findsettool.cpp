@@ -40,6 +40,7 @@ void FindSetTool::treeModeUnoptimized(Node *node)
         DisjointSetsScene *s = new DisjointSetsScene(scene, scene->forest, DisjointSetsScene::TREE);
         s->resetScene();
         s->highlightNode(node);
+        s->label = "Walk to the root";
         simulation->scenes.append(s);
         node = node->parent;
     }while(node != NULL);
@@ -60,6 +61,7 @@ void FindSetTool::treeModeOptimized(Node *node)
         path.append(node);
         DisjointSetsScene *s = new DisjointSetsScene(scene, scene->forest, DisjointSetsScene::TREE);
         s->resetScene();
+        s->label = "Walk to the root,\n remember path";
         foreach(Node *n, path)
             s->highlightNode(n);
         simulation->scenes.append(s);
@@ -81,6 +83,7 @@ void FindSetTool::treeModeOptimized(Node *node)
 
     DisjointSetsScene *s = new DisjointSetsScene(scene, newForest, DisjointSetsScene::TREE);
     s->resetScene();
+    s->label = "Finally, change all nodes\nto point to root";
     foreach(Node *n, path)
         s->highlightNode(n);
     simulation->scenes.append(s);
@@ -101,6 +104,7 @@ void FindSetTool::listMode(Node *node)
     s1->resetScene();
     s1->highlightNode(node);
     simulation->scenes.append(s1);
+    s1->label = "See the parent for " + node->label;
 
     if(node->parent != NULL)
     {
@@ -109,6 +113,7 @@ void FindSetTool::listMode(Node *node)
         DisjointSetsScene *s2 = new DisjointSetsScene(scene, scene->forest, DisjointSetsScene::LIST);
         s2->resetScene();
         s2->highlightNode(node);
+        s2->label = "The pointer goes straight to " + node->parent->label;
         simulation->scenes.append(s2);
     }
 

@@ -24,6 +24,8 @@ public:
     QPen nodeHighlightPen;
     QBrush nodeHighlightBrush;
 
+    QString label;
+
     void resetScene();
     void addAsList();
     void addAsTree();

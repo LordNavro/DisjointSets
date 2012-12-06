@@ -18,6 +18,7 @@
 #include "utils.h"
 #include <QFileDialog>
 #include <QTextStream>
+#include <QLabel>
 
 namespace Ui {
     class MainWindow;
@@ -89,9 +90,12 @@ protected:
     QToolBar *toolBarRepresentation;
     QToolBar *toolBarSimulation;
 
+    QLabel *labelSimulationProgress;
+
     DisjointSetsScene *scene;
     QGraphicsView *view;
 
+    void updateSimulationLabel(void);
 
 public slots:
     void slotNew(void);
