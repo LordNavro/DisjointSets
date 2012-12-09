@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QDebug>
+#include <QXmlStreamReader>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -274,7 +277,25 @@ void MainWindow::slotSaveAs(void)
 
 void MainWindow::slotOpen(void)
 {
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("XML File (*.xml)"));
 
+    QFile file(fileName);
+    file.open(QIODevice::ReadOnly);
+
+//    QTextStream in(&file);
+//    QString content;
+//    QString line = in.readLine();
+
+//    while (!line.isNull()) {
+//        content.append(line);
+//        line = in.readLine();
+//    }
+//    qDebug() << content;
+//    file.close();
+
+//    QDomDocument xml("mydocument");
+//    xml.setContent(file);
+//    Utils::xmlToForest(QDom Document xml)
 }
 
 void MainWindow::slotAbout(void)

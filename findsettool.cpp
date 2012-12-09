@@ -113,7 +113,7 @@ void FindSetTool::listMode(Node *node)
         DisjointSetsScene *s2 = new DisjointSetsScene(scene, scene->forest, DisjointSetsScene::LIST);
         s2->resetScene();
         s2->highlightNode(node);
-        s2->label = "The pointer goes straight to " + node->parent->label;
+        s2->label = "The pointer goes straight to " + node->label;
         simulation->scenes.append(s2);
     }
 
