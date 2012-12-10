@@ -63,12 +63,12 @@ QDomDocument Utils::forestToXml(QList<Node *>forest)
     return xml;
 }
 
-QList<Node *> Utils::xmlToForest(QDomDocument xml)
+QList<Node *>* Utils::xmlToForest(QDomDocument xml)
 {
     //fixme -> check element name is "forest"?
-    QList<Node *>forest;
-    for(int i = 0; i < xml.childNodes().size(); i++)
-        forest.append(xmlToTree(xml.childNodes().at(i).toElement()));
+    QList<Node *>* forest = new QList<Node *>;
+    for(int i = 0; i < xml.firstChild().childNodes().size(); i++)
+        forest->append(xmlToTree(xml.firstChild().childNodes().at(i).toElement()));
     return forest;
 }
 

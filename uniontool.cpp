@@ -41,6 +41,7 @@ void UnionTool::simulate(Node *n1, Node *n2)
     s->resetScene();
     s->highlightNode(n1);
     s->highlightNode(n2);
+    s->label = "Find roots of nodes";
     while(n1->parent != NULL)
         n1 = n1->parent;
     while(n2->parent != NULL)
@@ -66,23 +67,31 @@ void UnionTool::simulate(Node *n1, Node *n2)
                 //check heights and possibly swap n1, n2 so that n1 is shorter then n2
                 if(Utils::treeHeight(n1) < Utils::treeHeight(n2))
                 {
+                    s->label = n1->label + " is smaller,\nconnect it to " + n2->label;
                     Node *temp = n1;
                     n1 = n2;
                     n2 = temp;
                 }
+                else
+                    s->label = n2->label + " is smaller,\nconnect it to " + n1->label;
             }
             else
             {
                 //check lengths and possibly swap n1, n2 so that n1 is shorter then n2
                 if(Utils::listLength(n1) < Utils::listLength(n2))
                 {
+                    s->label = n1->label + " is shorter,\nconnect it to " + n2->label;
                     Node *temp = n1;
                     n1 = n2;
                     n2 = temp;
                 }
+                else
+                    s->label = n2->label + " is shorter,\nconnect it to " + n1->label;
             }
 
         }
+        else
+            s->label = "Connect " + n2->label + "\nto " + n1->label;
 
         simulation->finalForest->removeAt(simulation->finalForest->indexOf(n2));
         n1->children.append(n2);
@@ -94,6 +103,8 @@ void UnionTool::simulate(Node *n1, Node *n2)
             simulateList(simulation, n1, n2);
 
     }
+    else
+        s->label = "Both items in same set\nnothing to be done";
 
     simulation->currentScene = simulation->scenes.begin();
     emit signalSimulate(simulation);
@@ -105,6 +116,7 @@ void UnionTool::simulateTree(Simulation *simulation, Node *n1, Node *n2)
     s->resetScene();
     s->highlightNode(n1);
     s->highlightNode(n2);
+    s->label = "Change root of " + n2->label + "\nto " + n1->label;
     simulation->scenes.append(s);
 }
 
@@ -121,6 +133,7 @@ void UnionTool::simulateList(Simulation *simulation, Node *n1, Node *n2)
         s->highlightNode(n1);
         ListItem *root = s->findItem(n1);
         ListItem *oldRoot = s->findItem(n2);
+        s->label = "Change root\n of " + n->label;
 
         //items already reconnected to new root
         foreach(Node *connected, nodesToReconnect)

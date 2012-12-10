@@ -281,26 +281,23 @@ void MainWindow::slotOpen(void)
 
     QFile file(fileName);
     file.open(QIODevice::ReadOnly);
+    if(!file.isOpen())
+    {
+        QMessageBox::warning(this, "Open file error", "Failed to open file " + fileName);
+        return;
+    }
 
-//    QTextStream in(&file);
-//    QString content;
-//    QString line = in.readLine();
-
-//    while (!line.isNull()) {
-//        content.append(line);
-//        line = in.readLine();
-//    }
-//    qDebug() << content;
-//    file.close();
-
-//    QDomDocument xml("mydocument");
-//    xml.setContent(file);
-//    Utils::xmlToForest(QDom Document xml)
+    QDomDocument xml("mydocument");
+    xml.setContent(file.readAll());
+    currentTool->deselectTool();
+    scene->forest = Utils::xmlToForest(xml);
+    scene->resetScene();
+    currentTool->selectTool();
 }
 
 void MainWindow::slotAbout(void)
 {
-
+    QMessageBox::information(this, "Disjoint sets", "Simple application for simulation of disjoint sets operations. \n2012, xnavra23@fit.vutbr.cz");
 }
 
 void MainWindow::slotMakeSet(void)
@@ -461,5 +458,7 @@ void MainWindow::updateSimulationLabel(void)
     int currentScene = currentSimulation->scenes.indexOf(*currentSimulation->currentScene) + 1;
     labelSimulationProgress->setText(QString::number(currentScene) + "/" + QString::number(sumScenes)
                                      + "\n" + label);
+    actionSimulationPrevious->setDisabled(currentSimulation->currentScene == currentSimulation->scenes.begin());
+    actionSimulationNext->setDisabled(currentSimulation->currentScene + 1 == currentSimulation->scenes.end());
 
 }

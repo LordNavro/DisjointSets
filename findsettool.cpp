@@ -104,18 +104,28 @@ void FindSetTool::listMode(Node *node)
     s1->resetScene();
     s1->highlightNode(node);
     simulation->scenes.append(s1);
-    s1->label = "See the parent for " + node->label;
 
     if(node->parent != NULL)
     {
-        while(node->parent != NULL)
-            node = node->parent;
+        s1->label = "See the parent for " + node->label;
         DisjointSetsScene *s2 = new DisjointSetsScene(scene, scene->forest, DisjointSetsScene::LIST);
         s2->resetScene();
+        ListItem * nodeItem = s2->findItem(node);
         s2->highlightNode(node);
-        s2->label = "The pointer goes straight to " + node->label;
+        while(node->parent != NULL)
+            node = node->parent;
+        ListItem * rootItem = s2->findItem(node);
+
+        s2->addLine(rootItem->boundingRect().left() + 15, rootItem->boundingRect().top() + 30, rootItem->boundingRect().left() + 15, rootItem->boundingRect().top() + 40);
+        s2->addLine(nodeItem->boundingRect().left() + 15, nodeItem->boundingRect().top() + 30, nodeItem->boundingRect().left() + 15, nodeItem->boundingRect().top() + 40);
+        s2->addLine(rootItem->boundingRect().left() + 15, rootItem->boundingRect().top() + 40, nodeItem->boundingRect().left() + 15, nodeItem->boundingRect().top() + 40);
+
+        s2->highlightNode(node);
+        s2->label = "The root pointer goes \n straight to " + node->label;
         simulation->scenes.append(s2);
     }
+    else
+        s1->label = node->label + " is a root node";
 
 
     simulation->currentScene = simulation->scenes.begin();
