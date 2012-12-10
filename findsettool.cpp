@@ -58,7 +58,7 @@ void FindSetTool::treeModeOptimized(Node *node)
     Node *root = NULL;
     do{
         root = node;
-        path.append(node);
+        path.prepend(node);
         DisjointSetsScene *s = new DisjointSetsScene(scene, scene->forest, DisjointSetsScene::TREE);
         s->resetScene();
         s->label = "Walk to the root,\n remember path";
@@ -74,19 +74,33 @@ void FindSetTool::treeModeOptimized(Node *node)
 
     foreach(Node *pathItem, path)
     {
+
         if(pathItem->parent == NULL || pathItem->parent == root)
                continue;
         pathItem->parent->children.removeAt(pathItem->parent->children.indexOf(pathItem));
         pathItem->parent = root;
         root->children.append(pathItem);
+        DisjointSetsScene *s = new DisjointSetsScene(scene, newForest, DisjointSetsScene::TREE);
+        s->resetScene();
+        s->highlightNode(pathItem);
+        bool start = false;
+        foreach(Node *subPathItem, path)
+        {
+            if(!start)
+            {
+                if(subPathItem == pathItem)
+                    start = true;
+                continue;
+            }
+            s->highlightNode(subPathItem);
+        }
+
+        s->label = "Change root of " + pathItem->label + "\nto " + root->label;
+        simulation->scenes.append(s);
     }
 
-    DisjointSetsScene *s = new DisjointSetsScene(scene, newForest, DisjointSetsScene::TREE);
-    s->resetScene();
-    s->label = "Finally, change all nodes\nto point to root";
-    foreach(Node *n, path)
-        s->highlightNode(n);
-    simulation->scenes.append(s);
+    //foreach(Node *n, path)
+    //    s->highlightNode(n);
 
     simulation->finalForest = newForest;
     simulation->currentScene = simulation->scenes.begin();

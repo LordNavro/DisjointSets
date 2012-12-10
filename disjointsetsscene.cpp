@@ -123,7 +123,7 @@ QPoint DisjointSetsScene::addNodeItemToScene(Node * node, QPoint startCoords)
     foreach(Node *child, node->children)
     {
         endCoords.setY(startCoords.y() + 60);
-        addLine(startCoords.x() + 15, startCoords.y() + 15, endCoords.x() + 15, endCoords.y() + 15, arrowPen);
+        addLine(startCoords.x() + 15, startCoords.y() + 15, endCoords.x() + 15, endCoords.y(), arrowPen);
         endCoords = addNodeItemToScene(child, endCoords);
     }
     addItem(nodeItem);

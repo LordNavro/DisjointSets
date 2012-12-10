@@ -28,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->currentSimulation = NULL;
     actionAddNode->trigger();
     actionTree->trigger();
+    optimizeFindSet = false;
+    optimizeUnion = false;
     actionOptimizeFindSet->trigger();
     actionOptimizeUnion->trigger();
 
@@ -363,14 +365,14 @@ void MainWindow::slotTree()
 void MainWindow::slotOptimizeFindSet()
 {
     //the value is BEFORE CHANGE!
-    optimizeFindSet = !actionFindSet->isChecked();
+    optimizeFindSet = !optimizeFindSet;
     toolFindSet->optimize = optimizeFindSet;
 }
 
 void MainWindow::slotOptimizeUnion()
 {
     //the value is BEFORE CHANGE!
-    optimizeUnion = !actionUnion->isChecked();
+    optimizeUnion = !optimizeUnion;
     toolUnion->optimize = optimizeUnion;
 }
 
